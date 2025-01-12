@@ -1,7 +1,4 @@
-APP = flask-app
-PORT = 8080
-FLASK_ENV = development
-FLASK_DEBUG = 1
+include .env
 
 .PHONY: up
 up:
@@ -20,7 +17,9 @@ down:
 .PHONY: clean
 clean:
 	@echo "Removing $(APP)"
-	docker images -q $(APP) | xargs docker rmi
+	docker ps -q --filter ancestor=$(APP) | xargs -r docker stop
+	docker ps -a -q --filter ancestor=$(APP) | xargs -r docker rm
+	docker images -q $(APP) | xargs -r docker rmi
 
 .PHONY: logs
 logs:
